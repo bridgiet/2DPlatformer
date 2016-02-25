@@ -1,16 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.scripts;
 
 public class MeouthController : MonoBehaviour {
+    //PUBLIC INSTANCE VARIABLES
+    public VelocityRange velocityRange;
+    public float moveForce;
+    public float jumpForce;
+    public Transform groundCheck;
+
     //PRIVATE INSTANCE VARIABLES
     private Animator _animator;
     private float _move;
     private float _jump;
     private bool _facingRight;
     private Transform _transform;
-	// Use this for initialization
+    private Rigidbody2D _rigidBody2d;
+    private bool _isGrounded;
+	
+    // Use this for initialization
 	void Start () {
+        //Initialize Public Instance Variables
+        this.velocityRange = new VelocityRange(750f, 20000f);
+        this.moveForce = 750f;
+        this.jumpForce = 20000f;
+        
+        //Initialize Private Instance Variables
         this._transform = gameObject.GetComponent<Transform>();
+        this._rigidBody2d = gameObject.GetComponent<Rigidbody2D>();
         this._animator = gameObject.GetComponent<Animator>();
         this._move = 0f;
         this._jump = 0f;
@@ -18,31 +35,77 @@ public class MeouthController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        this._move = Input.GetAxis("Horizontal");
-        this._jump = Input.GetAxis("Vertical");
-        Debug.Log("WALK" + this._move);
-        Debug.Log("JUMP" + this._jump);
-        if(this._move != 0)
-        {
+	void FixedUpdate () {
+        this._isGrounded = Physics2D.Linecast(
+                            this._transform.position, 
+                            this.groundCheck.position,
+                            1 << LayerMask.NameToLayer("Ground"));
+        Debug.DrawLine(this._transform.position, this.groundCheck.position);
 
-            if (this._move > 0)
+        float forceX = 0f;
+        float forceY = 0f;
+
+        //get absolute value of velocity for our gameObject
+        float absVelX = Mathf.Abs(this._rigidBody2d.velocity.x);
+        float absVelY = Mathf.Abs(this._rigidBody2d.velocity.y);
+
+        //Ensure the player is grounded before any movement check
+        if (this._isGrounded)
+        {
+            //gets a number between -1 to 1 for both Horizontal and Vertical axes
+            this._move = Input.GetAxis("Horizontal");
+            this._jump = Input.GetAxis("Vertical");
+
+            if (this._move != 0)
             {
-                this._facingRight = true;
+                if (this._move > 0)
+                {
+                    //Movement force
+                    if (absVelX < this.velocityRange.maximum)
+                    {
+                        forceX = this.moveForce;
+                    }
+                    this._facingRight = true;
+                }
+                if (this._move < 0)
+                {
+                    //Movement Force
+                    if (absVelX < this.velocityRange.maximum)
+                    {
+                        forceX = -this.moveForce;
+                    }
+                    this._facingRight = false;
+                }
+                this._flip();
+
+                //call the walk clip
+                this._animator.SetInteger("AnimeState", 1);
             }
-            if (this._move < 0)
+            else
             {
-                this._facingRight = false;
+                //call the idle clip
+                this._animator.SetInteger("AnimeState", 0);
             }
-            this._flip();
-            //call the walk clip
-            this._animator.SetInteger("AnimeState", 0);
+
+            
+
+            if (this._jump > 0)
+            {
+                //Jump force
+                if (absVelY < this.velocityRange.maximum)
+                {
+                    forceY = this.jumpForce;
+                }
+            }
         }    
-        if(this._jump > 0)
+        else
         {
             //call the jump clip
-            this._animator.SetInteger("AnimeState", 1);
+            this._animator.SetInteger("AnimeState", 2);
         }
+
+        //Apply the forces to the player
+        this._rigidBody2d.AddForce(new Vector2(forceX, forceY));
 	}
 
     //PRIVATE METHOD
