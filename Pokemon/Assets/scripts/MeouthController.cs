@@ -8,6 +8,7 @@ public class MeouthController : MonoBehaviour {
     public float moveForce;
     public float jumpForce;
     public Transform groundCheck;
+    public Transform camera;
 
     //PRIVATE INSTANCE VARIABLES
     private Animator _animator;
@@ -36,6 +37,8 @@ public class MeouthController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+        Vector3 currentPosition = new Vector3(this._transform.position.x, this._transform.position.y, this.camera.position.z);
+        this.camera.position = currentPosition;
         this._isGrounded = Physics2D.Linecast(
                             this._transform.position, 
                             this.groundCheck.position,
