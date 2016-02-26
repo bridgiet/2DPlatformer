@@ -117,6 +117,16 @@ public class MeowthController : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D other)
     {
+        if (other.gameObject.CompareTag("Coin")){
+            Destroy(other.gameObject);
+            this.gameController.ScoreValue ++;
+        }
+        if (other.gameObject.CompareTag("Amulet"))
+        {
+            Destroy(other.gameObject);
+            this.gameController.ScoreValue+= this.gameController.ScoreValue * 2;
+            this.gameController.LivesValue++;
+        }
         if (other.gameObject.CompareTag("Death"))
         {
             this.gameController.LivesValue--;     
@@ -139,6 +149,6 @@ public class MeowthController : MonoBehaviour {
 
     private void _spawn()
     {
-        this._transform.position = new Vector3(-110, 720, 0);
+        this._transform.position = new Vector3(-100, 720, 0);
     }
 }

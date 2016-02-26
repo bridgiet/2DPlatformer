@@ -24,7 +24,7 @@ public class GameController : MonoBehaviour {
         set
         {
             this._scoreValue = value;
-            this.scoreLabel.text = "Score: " + this._scoreValue;
+            this.scoreLabel.text = "Coins: " + this._scoreValue;
         }
     }
 
@@ -84,6 +84,6 @@ public class GameController : MonoBehaviour {
     //PUBLIC METHODS
     public void RestartButtonClick()
     {
-        Application.LoadLevel("Main");
+        Application.LoadLevel("Pokemon");
     }
 }
