@@ -19,7 +19,12 @@ public class MeowthController : MonoBehaviour {
     private Transform _transform;
     private Rigidbody2D _rigidBody2d;
     private bool _isGrounded;
-	
+    private AudioSource[] _audioSources;
+    private AudioSource _jumpSound;
+    private AudioSource _coinSound;
+    private AudioSource _lifeSound;
+    private AudioSource _hurtSound;
+
     // Use this for initialization
 	void Start () {
         //Initialize Public Instance Variables
@@ -34,6 +39,13 @@ public class MeowthController : MonoBehaviour {
         this._move = 0f;
         this._jump = 0f;
         this._facingRight = true;
+        
+        //Setup Audio sources
+        this._audioSources = gameObject.GetComponents<AudioSource>();
+        this._jumpSound = this._audioSources[0];
+        this._hurtSound = this._audioSources[1];
+        this._lifeSound = this._audioSources[2];
+        this._coinSound = this._audioSources[3];
 
         //Place the hero in the strting position
         this._spawn();
@@ -102,6 +114,7 @@ public class MeowthController : MonoBehaviour {
                 if (absVelY < this.velocityRange.maximum)
                 {
                     forceY = this.jumpForce;
+                    this._jumpSound.Play();
                 }
             }
         }    
@@ -118,11 +131,13 @@ public class MeowthController : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Coin")){
+            this._coinSound.Play();
             Destroy(other.gameObject);
             this.gameController.ScoreValue ++;
         }
         if (other.gameObject.CompareTag("Amulet"))
         {
+            this._lifeSound.Play();
             Destroy(other.gameObject);
             this.gameController.ScoreValue+= this.gameController.ScoreValue * 2;
             this.gameController.LivesValue++;
@@ -131,6 +146,7 @@ public class MeowthController : MonoBehaviour {
         {
             this.gameController.LivesValue--;     
             this._spawn();
+            this._hurtSound.Play();
         }
     }
 
@@ -149,6 +165,6 @@ public class MeowthController : MonoBehaviour {
 
     private void _spawn()
     {
-        this._transform.position = new Vector3(-100, 720, 0);
+        this._transform.position = new Vector3(-60, 650, 0);
     }
 }
