@@ -5,12 +5,14 @@ public class GameController : MonoBehaviour {
     //PRIVATE INSTANCE VARIABLES
     private int _scoreValue;
     private int _livesValue;
+    private bool _levelCompleted;
 
     //PUBLIC INSTANCE VARIABLES
     public Text livesLabel;
     public Text scoreLabel;
     public Text gameOverLabel;
     public Text highSchoolLabel;
+    public Text winLabel;
     public Button restartButton;
 
     //PUBLIC ACCESS METHODS
@@ -49,6 +51,22 @@ public class GameController : MonoBehaviour {
             }           
         }
     }
+    public bool LevelCompleted
+    {
+        get
+        {
+            return this._levelCompleted;
+        }
+
+        set
+        {
+            this._levelCompleted = value;
+            if (this._levelCompleted == true)
+            {
+                _endGame();
+            }
+        }
+    }
 
     // Use this for initialization
     void Start () {
@@ -66,7 +84,9 @@ public class GameController : MonoBehaviour {
     {
         this.ScoreValue = 0;
         this.LivesValue = 5;
+        this.LevelCompleted = false;
         this.gameOverLabel.gameObject.SetActive(false);
+        this.winLabel.gameObject.SetActive(false);
         this.highSchoolLabel.gameObject.SetActive(false);
         this.restartButton.gameObject.SetActive(false);
     }
@@ -74,7 +94,14 @@ public class GameController : MonoBehaviour {
     private void _endGame()
     {
         this.highSchoolLabel.text = "High Score: " + _scoreValue;
-        this.gameOverLabel.gameObject.SetActive(true);
+        if (this.LevelCompleted)
+        {
+            this.winLabel.gameObject.SetActive(true);
+        }
+        else
+        {
+            this.gameOverLabel.gameObject.SetActive(true);
+        }
         this.highSchoolLabel.gameObject.SetActive(true);
         this.scoreLabel.gameObject.SetActive(false);
         this.livesLabel.gameObject.SetActive(false);

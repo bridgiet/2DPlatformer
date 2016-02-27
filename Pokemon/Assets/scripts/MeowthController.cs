@@ -8,7 +8,7 @@ public class MeowthController : MonoBehaviour {
     public float moveForce;
     public float jumpForce;
     public Transform groundCheck;
-    public Transform camera;
+    public Transform mainCamera;
     public GameController gameController;
 
     //PRIVATE INSTANCE VARIABLES
@@ -53,8 +53,8 @@ public class MeowthController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        Vector3 currentPosition = new Vector3(this._transform.position.x, this._transform.position.y, this.camera.position.z);
-        this.camera.position = currentPosition;
+        Vector3 currentPosition = new Vector3(this._transform.position.x, this._transform.position.y, this.mainCamera.position.z);
+        this.mainCamera.position = currentPosition;
         this._isGrounded = Physics2D.Linecast(
                             this._transform.position, 
                             this.groundCheck.position,
@@ -147,6 +147,18 @@ public class MeowthController : MonoBehaviour {
             this.gameController.LivesValue--;     
             this._spawn();
             this._hurtSound.Play();
+        }
+        if (other.gameObject.CompareTag("Murkrow"))
+        {
+            this.gameController.LivesValue--;
+            this._spawn();
+            this._hurtSound.Play();
+            Destroy(other.gameObject);
+        }
+        if (other.gameObject.CompareTag("Finish"))
+        {
+            this.gameController.ScoreValue = this.gameController.LivesValue * this.gameController.ScoreValue;
+            this.gameController.LevelCompleted = true;
         }
     }
 
