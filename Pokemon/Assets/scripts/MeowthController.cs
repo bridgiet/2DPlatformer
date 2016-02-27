@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.scripts;
+using System;
 
 public class MeowthController : MonoBehaviour {
     //PUBLIC INSTANCE VARIABLES
@@ -48,7 +49,7 @@ public class MeowthController : MonoBehaviour {
         this._coinSound = this._audioSources[3];
 
         //Place the hero in the strting position
-        this._spawn();
+        this._spawn(-60, 650);
 	}
 	
 	// Update is called once per frame
@@ -139,20 +140,20 @@ public class MeowthController : MonoBehaviour {
         {
             this._lifeSound.Play();
             Destroy(other.gameObject);
-            this.gameController.ScoreValue+= this.gameController.ScoreValue * 2;
+            this.gameController.ScoreValue = this.gameController.ScoreValue * 2;
             this.gameController.LivesValue++;
         }
         if (other.gameObject.CompareTag("Death"))
         {
             this.gameController.LivesValue--;     
-            this._spawn();
+            this._spawn(-60, 650);
             this._hurtSound.Play();
         }
         if (other.gameObject.CompareTag("Murkrow"))
         {
             this.gameController.LivesValue--;
-            this._spawn();
             this._hurtSound.Play();
+            this._spawn(640, 650);
             Destroy(other.gameObject);
         }
         if (other.gameObject.CompareTag("Finish"))
@@ -175,8 +176,8 @@ public class MeowthController : MonoBehaviour {
         }
     }
 
-    private void _spawn()
+    private void _spawn(int x, int y)
     {
-        this._transform.position = new Vector3(-60, 650, 0);
+        this._transform.position = new Vector3(x, y, 0);
     }
 }

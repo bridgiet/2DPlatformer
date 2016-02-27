@@ -12,7 +12,6 @@ public class MurkrowController : MonoBehaviour
 
     //PRIVATE INSTANCE VARIABLES
     private Animator _animator;
-    private float _move;
     private bool _facingRight;
     private Transform _transform;
     private Rigidbody2D _rigidBody2d;
@@ -29,7 +28,6 @@ public class MurkrowController : MonoBehaviour
         this._transform = gameObject.GetComponent<Transform>();
         this._rigidBody2d = gameObject.GetComponent<Rigidbody2D>();
         this._animator = gameObject.GetComponent<Animator>();
-        this._move = 0f;
         this._facingRight = true;
 
     }
