@@ -6,6 +6,9 @@ public class GameController : MonoBehaviour {
     private int _scoreValue;
     private int _livesValue;
     private bool _levelCompleted;
+    private AudioSource[] _audioSources;
+    private AudioSource _winSound;
+    private AudioSource _outSound;
 
     //PUBLIC INSTANCE VARIABLES
     public Text livesLabel;
@@ -89,6 +92,11 @@ public class GameController : MonoBehaviour {
         this.winLabel.gameObject.SetActive(false);
         this.highSchoolLabel.gameObject.SetActive(false);
         this.restartButton.gameObject.SetActive(false);
+
+        //Setup Audio sources
+        this._audioSources = gameObject.GetComponents<AudioSource>();
+        this._winSound = this._audioSources[0];
+        this._outSound = this._audioSources[1];
     }
 
     private void _endGame()
@@ -97,10 +105,12 @@ public class GameController : MonoBehaviour {
         if (this.LevelCompleted)
         {
             this.winLabel.gameObject.SetActive(true);
+            this._winSound.Play();
         }
         else
         {
             this.gameOverLabel.gameObject.SetActive(true);
+            this._outSound.Play();
         }
         this.highSchoolLabel.gameObject.SetActive(true);
         this.scoreLabel.gameObject.SetActive(false);
